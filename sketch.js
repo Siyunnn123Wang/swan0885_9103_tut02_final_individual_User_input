@@ -6,6 +6,7 @@ let circles = [];
 let gameMode = 'drop';
 let nextCircleIndex = 0;
 const FALL_SPEED = 5;
+
 /**
  * Initialize the canvas and set up the drawing environment
  */
@@ -39,24 +40,32 @@ function windowResized() {
  */
 function draw() {
   clear();
-  drawBackgroundGrid();  // Draw colored quadrants with random dots
-  updateAllCircles(); // Update circle states if needed
-  drawAllCircles();      // Draw all circle compositions
+  drawBackgroundGrid();  
+  updateAllCircles(); 
+  drawAllCircles();     
 }
 
 /**
  * CircleArt class - represents a scalable, translatable circle composition
- * Each instance stores position, scale, and a custom drawing function
  */
 class CircleArt {
   constructor(x, targetY, scale, drawFn) {
-    this.x = x;           // X position on canvas
-    this.y = -200;           // Y position on canvas
-    this.targetY = targetY;    // Target Y position on canvas
-    this.scale = scale;   // Scale multiplier
-    this.drawFn = drawFn; // Drawing function for this circle
+    this.x = x;         
+    this.y = -200;           
+    this.targetY = targetY;    
+    this.scale = scale;  
+    this.drawFn = drawFn; 
     this.isFalling = false;
+    this.angle = 0;
+    this.hitRadius = 150 * scale;
   }
+
+
+  isMouseOver() {
+    const d = dist(mouseX, mouseY, this.x, this.y);
+    return d <= this.hitRadius;
+  }
+
 
   /**   * Update the circle's position if it is falling
    */
@@ -68,7 +77,12 @@ class CircleArt {
         this.isFalling = false;
       }
     }
+    
+    if (this.isMouseOver()) {
+      this.angle += 5;
+    }
   }
+
 
   /**
    * Display the circle at its position with its scale
@@ -76,11 +90,14 @@ class CircleArt {
   draw() {
     push();
     translate(this.x, this.y);
+    rotate(this.angle);
     scale(this.scale);
     this.drawFn();
     pop();
   }
 }
+
+
 
 /**
  * Draw the background grid with four colored quadrants
@@ -127,6 +144,7 @@ function drawBackgroundGrid() {
     }
   }
 }
+
 
 
 /**
