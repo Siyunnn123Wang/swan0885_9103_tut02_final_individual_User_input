@@ -5,6 +5,8 @@ let cnv;
 let circles = [];
 let gameMode = 'drop';
 let nextCircleIndex = 0;
+let bgColorMode = 0;
+let bgOrder = [0, 1, 2, 3];
 const FALL_SPEED = 5;
 
 /**
@@ -79,7 +81,7 @@ class CircleArt {
     }
     
     if (this.isMouseOver()) {
-      this.angle += 5;
+      this.angle += 2;
     }
   }
 
@@ -104,7 +106,20 @@ class CircleArt {
  * Each quadrant contains randomly distributed black circles
  */
 function drawBackgroundGrid() {
-  const cols = ['#d14a2a', '#4c95e0', '#558f48', '#de7b2e'];
+  rectMode(CORNER);
+  const baseColor = ['#d14a2a', '#4c95e0', '#558f48', '#de7b2e'];
+  let cols;
+
+  if (bgColorMode === 0) {
+    cols = baseColor;
+  } else if (bgColorMode === 1) {
+    cols = [baseColor[1], baseColor[0], baseColor[3], baseColor[2]];
+  } else if (bgColorMode === 2) {
+    cols = [baseColor[2], baseColor[3], baseColor[0], baseColor[1]];
+  } else if (bgColorMode === 3) {
+    cols = [baseColor[3], baseColor[2], baseColor[1], baseColor[0]];
+  }
+  
   const cell = width / 2;
 
   // Draw the four background quadrants
@@ -185,6 +200,27 @@ function buildAllCircles() {
   }
 
 /**
+ * ==================== key Interaction ====================
+ */
+function keyPressed() {
+  if (key === '1') {
+    bgColorMode = 0;
+  } else if (key === '2') {
+    bgColorMode = 1;
+  } else if (key === '3') {
+    bgColorMode = 2;
+  } else if (key === '4') {
+    bgColorMode = 3;
+  }
+  if (key === 'r' || key === 'R') {
+    bgColorMode = 0;
+    buildAllCircles();
+  }
+}
+ 
+
+
+  /**
  * ==================== Mouse Interaction ====================
  */
 function mousePressed() {
