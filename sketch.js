@@ -3,7 +3,9 @@
 // ========================
 let cnv;
 let circles = [];
-
+let gameMode = 'drop';
+let nextCircleIndex = 0;
+const FALL_SPEED = 5;
 /**
  * Initialize the canvas and set up the drawing environment
  */
@@ -47,14 +49,25 @@ function draw() {
  * Each instance stores position, scale, and a custom drawing function
  */
 class CircleArt {
-  constructor(x, y, scale, drawFn) {
+  constructor(x, targetY, scale, drawFn) {
     this.x = x;           // X position on canvas
-    this.y = y;           // Y position on canvas
+    this.y = -200;           // Y position on canvas
+    this.targetY = targetY;    // Target Y position on canvas
     this.scale = scale;   // Scale multiplier
     this.drawFn = drawFn; // Drawing function for this circle
+    this.isFalling = false;
   }
+
+  /**   * Update the circle's position if it is falling
+   */
   update() {
-    // Placeholder for future updates 
+    if (this.isFalling && this.y < this.targetY) {
+      this.y = this.y + FALL_SPEED;
+      if (this.y >= this.targetY) {
+        this.y = this.targetY;
+        this.isFalling = false;
+      }
+    }
   }
 
   /**
@@ -137,6 +150,8 @@ function buildAllCircles() {
     new CircleArt(295, 730, 1.1, drawCircle6),
     new CircleArt(610, 730, 0.7, drawCircle7),
   ];
+  gameMode = 'drop';
+  nextCircleIndex = 0;
 }
 
   function updateAllCircles() {
@@ -151,7 +166,17 @@ function buildAllCircles() {
     }
   }
 
-
+/**
+ * ==================== Mouse Interaction ====================
+ */
+function mousePressed() {
+  if (gameMode === 'drop') {
+    if (nextCircleIndex < circles.length) {
+      circles[nextCircleIndex].isFalling = true;
+      nextCircleIndex++;
+    }
+  }
+}
 
 /**
  * ==================== CIRCLE #1: Purple Xingyuan ====================
