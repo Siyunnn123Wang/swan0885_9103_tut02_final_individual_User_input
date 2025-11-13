@@ -2,6 +2,7 @@
 // 800x800 Canvas – CircleArt Version
 // ========================
 let cnv;
+let circles = [];
 
 /**
  * Initialize the canvas and set up the drawing environment
@@ -9,8 +10,8 @@ let cnv;
 function setup() {
   cnv = createCanvas(800, 800);
   centerCanvas();
-  noLoop();
   angleMode(DEGREES);
+  buildAllCircles();
 }
 
 /**
@@ -37,6 +38,7 @@ function windowResized() {
 function draw() {
   clear();
   drawBackgroundGrid();  // Draw colored quadrants with random dots
+  updateAllCircles(); // Update circle states if needed
   drawAllCircles();      // Draw all circle compositions
 }
 
@@ -51,11 +53,14 @@ class CircleArt {
     this.scale = scale;   // Scale multiplier
     this.drawFn = drawFn; // Drawing function for this circle
   }
+  update() {
+    // Placeholder for future updates 
+  }
 
   /**
    * Display the circle at its position with its scale
    */
-  display() {
+  draw() {
     push();
     translate(this.x, this.y);
     scale(this.scale);
@@ -115,8 +120,8 @@ function drawBackgroundGrid() {
  * Create and display all circle compositions
  * Each circle is positioned at specific coordinates with a unique drawing function
  */
-function drawAllCircles() {
-  const circles = [
+function buildAllCircles() {
+  circles = [
     new CircleArt(10, 10, 1.0, drawCircle6),
     new CircleArt(220, 180, 0.9, drawCircle4),
     new CircleArt(400, -30, 0.4, drawCircle7),
@@ -132,12 +137,21 @@ function drawAllCircles() {
     new CircleArt(295, 730, 1.1, drawCircle6),
     new CircleArt(610, 730, 0.7, drawCircle7),
   ];
-
-  // Display all circles
-  for (const c of circles) {
-    c.display();
-  }
 }
+
+  function updateAllCircles() {
+    for (const c of circles) {
+      c.update();
+    }
+  }
+
+  function drawAllCircles() {
+    for (const c of circles) {
+      c.draw();
+    }
+  }
+
+
 
 /**
  * ==================== CIRCLE #1: Purple Xingyuan ====================
