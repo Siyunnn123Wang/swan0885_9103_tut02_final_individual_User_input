@@ -3,7 +3,6 @@
 // ========================
 let cnv;
 let circles = [];
-let gameMode = 'drop';
 let nextCircleIndex = 0;
 let bgColorMode = 0;
 let bgOrder = [0, 1, 2, 3];
@@ -51,7 +50,7 @@ function draw() {
  * CircleArt class - represents a scalable, translatable circle composition
  */
 class CircleArt {
-  constructor(x, targetY, scale, drawFn) {
+  constructor(x, targetY, scale, drawFn, baseRadius) {
     this.x = x;         
     this.y = -200;           
     this.targetY = targetY;    
@@ -59,7 +58,9 @@ class CircleArt {
     this.drawFn = drawFn; 
     this.isFalling = false;
     this.angle = 0;
-    this.hitRadius = 150 * scale;
+    this.baseRadius = baseRadius;
+    this.hitRadius = this.baseRadius * this.scale;
+    this.isVisible = true;
   }
 
 
@@ -72,6 +73,9 @@ class CircleArt {
   /**   * Update the circle's position if it is falling
    */
   update() {
+    if (!this.isVisible) {
+      return;
+    }
     if (this.isFalling && this.y < this.targetY) {
       this.y = this.y + FALL_SPEED;
       if (this.y >= this.targetY) {
@@ -90,6 +94,10 @@ class CircleArt {
    * Display the circle at its position with its scale
    */
   draw() {
+    if (!this.isVisible) {
+      return;
+    }
+
     push();
     translate(this.x, this.y);
     rotate(this.angle);
@@ -168,36 +176,51 @@ function drawBackgroundGrid() {
  */
 function buildAllCircles() {
   circles = [
-    new CircleArt(10, 10, 1.0, drawCircle6),
-    new CircleArt(220, 180, 0.9, drawCircle4),
-    new CircleArt(400, -30, 0.4, drawCircle7),
-    new CircleArt(530, 180, 0.6, drawCircle8),
-    new CircleArt(785, 80, 0.8, drawCircle4),
+    new CircleArt(10, 10, 1.0, drawCircle6, 130),
+    new CircleArt(220, 180, 0.9, drawCircle4, 160),
+    new CircleArt(400, -30, 0.4, drawCircle7, 250),
+    new CircleArt(530, 180, 0.6, drawCircle8, 250),
+    new CircleArt(785, 80, 0.8, drawCircle4, 160),
 
-    new CircleArt(-45, 270, 0.9, drawCircle3),
-    new CircleArt(154, 460, 1.4, drawCircle1),
-    new CircleArt(434, 460, 1.4, drawCircle2),
-    new CircleArt(760, 410, 1.2, drawCircle3),
+    new CircleArt(-45, 270, 0.9, drawCircle3, 150),
+    new CircleArt(154, 460, 1.4, drawCircle1, 100), 
+    new CircleArt(434, 460, 1.4, drawCircle2, 100),
+    new CircleArt(760, 410, 1.2, drawCircle3, 150),
 
-    new CircleArt(20, 700, 1, drawCircle5),
-    new CircleArt(295, 730, 1.1, drawCircle6),
-    new CircleArt(610, 730, 0.7, drawCircle7),
+    new CircleArt(20, 700, 1, drawCircle5, 120),
+    new CircleArt(295, 730, 1.1, drawCircle6, 130),
+    new CircleArt(610, 730, 0.7, drawCircle7, 250),
   ];
-  gameMode = 'drop';
   nextCircleIndex = 0;
 }
 
   function updateAllCircles() {
     for (const c of circles) {
+      if (c.isVisible) {
       c.update();
     }
+   } 
   }
 
   function drawAllCircles() {
     for (const c of circles) {
+      if (c.isVisible){
       c.draw();
     }
+    }
   }
+
+function allCirclesLanded() {
+  for (const c of circles) {
+    if (c.isFalling === true) 
+      return false;
+    if (c.y < c.targetY) 
+      return false;
+  }
+  return true;
+}
+
+
 
 /**
  * ==================== key Interaction ====================
@@ -224,14 +247,21 @@ function keyPressed() {
  * ==================== Mouse Interaction ====================
  */
 function mousePressed() {
-  if (gameMode === 'drop') {
-    if (nextCircleIndex < circles.length) {
-      circles[nextCircleIndex].isFalling = true;
-      nextCircleIndex++;
+   for (let i = circles.length - 1; i >= 0; i--) {
+    const c = circles[i];
+    if (c.isVisible && c.isMouseOver()) {
+
+      c.isVisible = false;
+      return; 
     }
   }
-}
 
+  if (nextCircleIndex < circles.length) {
+    circles[nextCircleIndex].isFalling = true;
+    nextCircleIndex++;
+  }
+}
+ 
 /**
  * ==================== CIRCLE #1: Purple Xingyuan ====================
  */
