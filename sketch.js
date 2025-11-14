@@ -44,6 +44,13 @@ function draw() {
   drawBackgroundGrid();  
   updateAllCircles(); 
   drawAllCircles();     
+
+  if (allCirclesCleared()) {
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(32);
+    text("All circles cleared! Press 'R' or 'r' to reset.", width / 2, height / 2);
+  }
 }
 
 /**
@@ -220,6 +227,17 @@ function allCirclesLanded() {
   return true;
 }
 
+function allCirclesCleared() {
+  if (circles.length === 0) {
+    return true;
+  }
+  for (const c of circles) {
+    if (c.isVisible) {
+      return false;
+    }
+  }
+  return true;
+} 
 
 
 /**
