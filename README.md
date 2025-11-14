@@ -3,9 +3,9 @@
 # wheels-of-fortune — interactive p5.js sketch_User Input
 
 ## Part 1: Concept & Inspiration
+
 Inspired by **Pacita Abad’s _Wheels of Fortune_**, this sketch turns spinning ornaments into a small metaphor for **fate vs. choice**. Users “choose” by hovering/clicking; physics “decides” through gravity and bounce.  
 The drop mechanic is informed by the game **_Synthetic Watermelon_**, particularly its one-by-one falling sequence and slow accumulation on screen. In a similar way, each click in this sketch releases a single circle from the top, allowing users to observe how repeated drops gradually build, shift, and reorganise the overall composition.
-![SyntheticWatermelon](unnamed (1).webp)<br/>
 ![SyntheticWatermelon](unnamed.webp)<br/>
 ---
 
